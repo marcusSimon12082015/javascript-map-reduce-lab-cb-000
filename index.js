@@ -9000,3 +9000,62 @@ const issues = [
     "url": "https://api.github.com/repos/learn-co-curriculum/js-donut-lab/issues/2"
   }
 ];
+
+//Updating the url
+function updateUrl(request){
+  var searchedString = "api.github.com"
+  var updatedUrl = request.url.replace("api.github.com","api-v2.github.com");
+  return Object.assign({},request,{url: updatedUrl});
+}
+let issuesWithUpdatedApiUrl = issues.map(updateUrl);
+////////////////////////////////////////////////////////////////////////////////
+
+
+//Count the sum of all comments for issues
+function commentsCounter(sumComments, issue){
+  return sumComments + issue.comments_count;
+}
+
+let commentCountAcrossIssues = issues.reduce(commentsCounter,0);
+////////////////////////////////////////////////////////////////////
+
+
+//Return only open issues
+function issuesOpen(open,issue){
+  if(issue.state === "open"){
+    open.push(issue);
+  }
+  return open;
+}
+
+let openIssues = issues.reduce(issuesOpen,[]);
+////////////////////////////////////////////////////////////////////////////
+
+
+//issues created by humans
+function excludeBots(humans,issue){
+  if (!issue.body.includes("This pull request has been automatically created by learn.co.")) {
+    humans.push(issue);
+  }
+  return humans;
+}
+var nonAutomaticIssues = issues.reduce(excludeBots,[]);
+//////////////////////////////////////////////////////////////////////////////
+
+
+//insert those nonAutomaticIssues to HTML table
+
+//get the tbody element with id
+var tBodyResults = document.getElementById("results");
+nonAutomaticIssues.forEach(issue => {
+    var row = tBodyResults.insertRow(0);
+
+    var body = row.insertCell(0);
+    var date = row.insertCell(1);
+    var state = row.insertCell(2);
+
+    body.innerHTML = issue.body;
+    date.innerHTML = issue.date;
+    state.innerHTML = issue.state;
+});
+///////////////////////////////////////////////////////
